@@ -16,10 +16,10 @@
 
 		private double RadiusValidate(double value)
 		{
-			if (Validator.NotNanMoreZero(value))
-				return value;
-			else
+			if (value <= 0 || double.IsNaN(value))
 				throw new ArgumentException($"Invalid radius value '{value}'");
+			else
+				return value;
 		}
 	}
 }

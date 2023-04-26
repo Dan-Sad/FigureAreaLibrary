@@ -1,25 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FigureAreaLibrary
+﻿namespace FigureAreaLibrary
 {
 	public class Triangle : ICalculateArea
 	{
 		private double _sideA, _sideB, _sideC;
 
-		public double SideA { get => _sideA; set => _sideA = SideValidate(value); }
-        public double SideB { get => _sideB; set => _sideB = SideValidate(value); }
-		public double SideC { get => _sideC; set => _sideC = SideValidate(value); }
+		public double SideA 
+		{ 
+			get => _sideA; 
+			set 
+			{ 
+				_sideA = SideValidate(value); 
+				CheckTriangleExist(); 
+			}
+		}
+        public double SideB 
+		{ 
+			get => _sideB; 
+			set 
+			{ 
+				_sideB = SideValidate(value);
+				CheckTriangleExist();
+			}
+		}
+		public double SideC 
+		{ 
+			get => _sideC; 
+			set 
+			{
+				_sideC = SideValidate(value);
+				CheckTriangleExist();
+			}
+		}
 
 		/// <summary> Triangle by lengths of three sides </summary>
 		public Triangle(double sideA, double sideB, double sideC) 
-		{ 
-			SideA = sideA;
-			SideB = sideB;
-			SideC = sideC;
+		{
+			_sideA = SideValidate(sideA);
+			_sideB = SideValidate(sideB);
+			_sideC = SideValidate(sideC);
+			CheckTriangleExist();
 		}
 
 		public double Area()
@@ -33,11 +52,11 @@ namespace FigureAreaLibrary
 		}
 
 		/// <returns> <c>true</c> if the triangle is right; otherwise <c>false</c></returns>
-		public bool IsRight()
+		public bool IsRight(int epsilon = 5)
 		{
-			double powA = _sideA * _sideA;
-			double powB = _sideB * _sideB;
-			double powC = _sideC * _sideC;
+			double powA = Math.Round(_sideA * _sideA, epsilon);
+			double powB = Math.Round(_sideB * _sideB, epsilon);
+			double powC = Math.Round(_sideC * _sideC, epsilon);
 
 			if (powA == powB + powC || powB == powA + powC || powC == powA + powB)
 				return true;
@@ -47,10 +66,18 @@ namespace FigureAreaLibrary
 
 		private double SideValidate(double value)
 		{
-			if (Validator.NotNanMoreZero(value))
-				return value;
-			else
+			if (value <= 0 || double.IsNaN(value))
 				throw new ArgumentException($"Invalid value length of side '{value}'");
+			else
+				return value;
+		}
+
+		private bool CheckTriangleExist()
+		{
+			if (_sideA + _sideB > _sideC && _sideA + _sideC > _sideB && _sideB + _sideC > _sideA)
+				return true;
+			else
+				throw new Exception($"Triangle with sides: {_sideA}, {_sideB}, {_sideC} doesn't exist");
 		}
 	}
 }
